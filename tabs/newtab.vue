@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue"
 
-import FlipDigit from "~/contents/FlipDigit.vue"
+import FlipDigit from "~/components/FlipDigit.vue"
 
 import "~/tabs/newtab.css"
 
@@ -94,7 +94,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1a1a1a;
+  /* 参考图：近黑炭灰底 */
+  background: #0f0f10;
   font-family:
     system-ui,
     -apple-system,
@@ -106,24 +107,26 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 36px;
+  gap: 40px;
 }
 
 .clock-display {
   display: flex;
   align-items: center;
-  gap: 10px;
+  /* 参考图：数字块之间小间距 */
+  gap: 14px;
 }
 
 .separator {
-  width: 24px;
+  width: 20px;
 }
 
 .date-display {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.38);
   text-align: center;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
 }
 </style>
