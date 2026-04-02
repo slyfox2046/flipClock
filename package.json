@@ -2,7 +2,7 @@
   "name": "fclock",
   "displayName": "Fclock",
   "version": "0.0.1",
-  "description": "fclock",
+  "description": "在任意网页显示可拖动的翻页时钟（12/24 小时）",
   "author": "sanss",
   "scripts": {
     "dev": "plasmo dev",
@@ -22,7 +22,10 @@
   },
   "manifest": {
     "host_permissions": [
-      "https://*/*"
-    ]
+      "<all_urls>"
+    ],
+    "chrome_url_overrides": {
+      "newtab": "tabs/newtab.html"
+    }
   }
 }

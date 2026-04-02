@@ -1,0 +1,234 @@
+/* 覆盖层根节点：Plasmo 注入容器 */
+#plasmo-shadow-container {
+  position: fixed !important;
+  z-index: 2147483646 !important;
+  pointer-events: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+}
+
+#plasmo-mount-container {
+  pointer-events: auto;
+}
+
+.fclock-root {
+  font-family: "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+  cursor: default;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
+}
+
+.fclock-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px 12px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #3a3f4a 0%, #252830 55%, #1a1d24 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.fclock-drag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 0 2px;
+  margin: -4px -4px 0;
+  border-radius: 8px;
+  cursor: grab;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  user-select: none;
+}
+
+.fclock-drag:active {
+  cursor: grabbing;
+}
+
+.fclock-drag-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.fclock-drag-dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.fclock-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.fclock-sep {
+  font-weight: 700;
+  font-size: 28px;
+  color: rgba(232, 234, 239, 0.85);
+  line-height: 1;
+  padding: 0 1px;
+  margin-top: -4px;
+  user-select: none;
+}
+
+.fclock-sep.fclock-sep-dim {
+  opacity: 0.35;
+}
+
+.fclock-ampm {
+  margin-left: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(232, 234, 239, 0.75);
+  letter-spacing: 0.06em;
+  user-select: none;
+  min-width: 2em;
+}
+
+/* ========== FlipDigit 翻页数字组件样式 ========== */
+
+.fclock-digit {
+  --fclock-digit-h: 56px;
+  --fclock-fs: 36px;
+  position: relative;
+  width: calc(var(--fclock-fs) * 0.72);
+  height: var(--fclock-digit-h);
+  font-size: var(--fclock-fs);
+  line-height: 1;
+  perspective: 220px;
+}
+
+.fclock-digit-inner {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.fclock-static {
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #2a2d35 0%, #1e2128 100%);
+  color: #e8eaef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+
+.fclock-static span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.fclock-top {
+  top: 0;
+  height: 50%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.45);
+  align-items: flex-start;
+  padding-top: 2px;
+}
+
+.fclock-top span {
+  top: 2px;
+}
+
+.fclock-bottom {
+  bottom: 0;
+  height: 50%;
+  align-items: flex-end;
+  padding-bottom: 2px;
+}
+
+.fclock-bottom span {
+  bottom: 2px;
+  transform: translateY(50%);
+}
+
+.fclock-flap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  background: linear-gradient(180deg, #353945 0%, #252830 100%);
+  color: #e8eaef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.fclock-flap span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.fclock-flap-top {
+  top: 0;
+  transform-origin: bottom center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+  z-index: 2;
+  align-items: flex-start;
+  padding-top: 2px;
+}
+
+.fclock-flap-top span {
+  top: 2px;
+}
+
+.fclock-flap-bottom {
+  bottom: 0;
+  transform-origin: top center;
+  z-index: 1;
+  align-items: flex-end;
+  padding-bottom: 2px;
+  transform: rotateX(90deg);
+}
+
+.fclock-flap-bottom span {
+  bottom: 2px;
+  transform: translateY(50%);
+}
+
+.fclock-flap-top.fclock-flip {
+  animation: fclock-flip-top 0.32s ease-in forwards;
+}
+
+.fclock-flap-bottom.fclock-flip {
+  animation: fclock-flip-bottom 0.32s ease-out forwards;
+}
+
+@keyframes fclock-flip-top {
+  from { transform: rotateX(0deg); }
+  to   { transform: rotateX(-90deg); }
+}
+
+@keyframes fclock-flip-bottom {
+  from { transform: rotateX(90deg); }
+  to   { transform: rotateX(0deg); }
+}
