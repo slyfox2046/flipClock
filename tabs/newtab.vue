@@ -13,6 +13,12 @@
       </div>
       <div class="date-display">
         {{ dateString }}
+        <template v-if="weatherReady">
+          <span class="weather-sep">·</span>
+          <span class="weather-temp">{{ temperature }}°C</span>
+          <span class="weather-sep">·</span>
+          <span class="weather-desc">{{ weatherDesc }}</span>
+        </template>
       </div>
     </div>
   </div>
@@ -32,6 +38,59 @@ const minOnes = ref("0")
 const secTens = ref("0")
 const secOnes = ref("0")
 const dateString = ref("")
+
+const temperature = ref("")
+const weatherDesc = ref("")
+const weatherReady = ref(false)
+
+// WMO 天气代码 → 中文描述
+const weatherCodeMap: Record<number, string> = {
+  0: "晴天",
+  1: "晴",
+  2: "多云",
+  3: "阴天",
+  45: "雾",
+  48: "冻雾",
+  51: "轻度毛毛雨",
+  53: "中度毛毛雨",
+  55: "重度毛毛雨",
+  56: "轻度冻毛毛雨",
+  57: "重度冻毛毛雨",
+  61: "小雨",
+  63: "中雨",
+  65: "大雨",
+  66: "轻度冻雨",
+  67: "重度冻雨",
+  71: "小雪",
+  73: "中雪",
+  75: "大雪",
+  77: "雪粒",
+  80: "小阵雨",
+  81: "中阵雨",
+  82: "强阵雨",
+  85: "小雪阵雨",
+  86: "大雪阵雨",
+  95: "雷暴",
+  96: "雷暴伴小冰雹",
+  99: "雷暴伴大冰雹",
+}
+
+async function fetchWeather() {
+  console.log("fetchWeather")
+  try {
+    const res = await fetch(
+      "https://api.open-meteo.com/v1/forecast?latitude=31.2304&longitude=121.5061&current_weather=true&timezone=Asia/Shanghai"
+    )
+    console.log(res)
+    const data = await res.json()
+    const cw = data.current_weather
+    temperature.value = String(cw.temperature)
+    weatherDesc.value = weatherCodeMap[cw.weathercode] ?? "--"
+    weatherReady.value = true
+  } catch {
+    // 网络异常时不显示天气
+  }
+}
 
 let tickTimer: ReturnType<typeof setInterval> | null = null
 
@@ -72,6 +131,9 @@ function applyTime() {
 onMounted(() => {
   applyTime()
   tickTimer = setInterval(applyTime, 250)
+  fetchWeather()
+  // 每30分钟刷新一次天气
+  setInterval(fetchWeather, 30 * 60 * 1000)
 })
 
 onUnmounted(() => {
@@ -128,5 +190,10 @@ body {
   text-align: center;
   letter-spacing: 0.14em;
   font-variant-numeric: tabular-nums;
+}
+
+.weather-sep {
+  opacity: 0.4;
+  margin: 0 6px;
 }
 </style>
