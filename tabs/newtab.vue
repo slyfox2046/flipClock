@@ -14,10 +14,15 @@
       <div class="date-display">
         {{ dateString }}
         <template v-if="weatherReady">
+          <template v-if="locationName">
+            <span class="weather-sep">·</span>
+            <span class="weather-location">{{ locationName }}</span>
+          </template>
           <span class="weather-sep">·</span>
           <span class="weather-temp">{{ temperature }}°C</span>
           <span class="weather-sep">·</span>
           <span class="weather-desc">{{ weatherDesc }}</span>
+
         </template>
       </div>
     </div>
@@ -41,6 +46,7 @@ const dateString = ref("")
 
 const temperature = ref("")
 const weatherDesc = ref("")
+const locationName = ref("")
 const weatherReady = ref(false)
 
 // WMO 天气代码 → 中文描述
@@ -75,20 +81,42 @@ const weatherCodeMap: Record<number, string> = {
   99: "雷暴伴大冰雹",
 }
 
-async function fetchWeather() {
-  console.log("fetchWeather")
-  try {
-    const res = await fetch(
-      "https://api.open-meteo.com/v1/forecast?latitude=31.2304&longitude=121.5061&current_weather=true&timezone=Asia/Shanghai"
+function getPosition(): Promise<GeolocationCoordinates> {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => resolve(pos.coords),
+      reject,
+      { timeout: 5000 }
     )
-    console.log(res)
+  })
+}
+
+async function fetchWeather() {
+  try {
+    const coords = await getPosition()
+    const { latitude, longitude } = coords
+    console.log(`经纬度：latitude=${latitude}, longitude=${longitude}`)
+
+    // 反向地理编码，获取中文地名（高德 Web 服务）
+    const geoRes = await fetch(
+      `https://amap.com/service/regeo?longitude=${longitude}&latitude=${latitude}`
+    )
+    const geoData = await geoRes.json()
+    const d = geoData.data ?? {}
+    // 省份 + 区县，例如：上海市浦东新区
+    locationName.value = `${d.province ?? ""}${d.district ?? ""}`
+    console.log(`位置：${locationName.value}`, d)
+
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&timezone=Asia/Shanghai`
+    )
     const data = await res.json()
     const cw = data.current_weather
     temperature.value = String(cw.temperature)
     weatherDesc.value = weatherCodeMap[cw.weathercode] ?? "--"
     weatherReady.value = true
   } catch {
-    // 网络异常时不显示天气
+    // 定位失败或网络异常时不显示天气
   }
 }
 
